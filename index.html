@@ -3,177 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Catálogo Premium</title>
+    <title>Catálogo Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a1a1a;
-            --accent: #d4af37;
-            --bg: #f4f6f8;
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            --success: #218838;
-            --action: #0984e3;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --action: #2563eb;
+            --danger: #ef4444;
         }
 
         body { 
             font-family: 'Inter', -apple-system, sans-serif; 
             background: var(--bg); 
-            color: var(--text-main); 
             margin: 0; 
-            padding-bottom: 30px;
+            color: var(--text-main);
+            padding-bottom: 40px; 
         }
 
-        /* Header optimizado para mobile */
         .header { 
-            background: var(--primary); 
-            color: white; 
-            padding: 30px 20px; 
-            text-align: center; 
+            background: var(--card-bg); 
+            color: var(--primary); 
+            padding: 25px 20px; 
+            text-align: left; 
+            border-bottom: 1px solid #e2e8f0;
         }
-        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; text-transform: uppercase; }
+        .header h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
         
-        /* Filtros Sticky con scroll horizontal si es necesario */
         .filter-container { 
-            background: #fff; padding: 12px; position: sticky; top: 0; z-index: 100; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            display: flex; gap: 8px; overflow-x: auto; white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 15px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto;
+            border-bottom: 1px solid #e2e8f0;
         }
         
         select { 
-            padding: 10px; border-radius: 8px; border: 1px solid #dfe6e9; 
-            background: #fdfdfd; font-size: 13px; min-width: 130px; flex: 1;
+            padding: 8px 12px; 
+            border-radius: 10px; 
+            border: 1px solid #e2e8f0; 
+            background: var(--card-bg); 
+            font-size: 13px; 
+            color: var(--text-main);
+            min-width: 110px;
         }
 
-        /* Grid */
-        .grid { 
-            padding: 15px; display: grid; 
-            grid-template-columns: 1fr; /* Una columna en mobile */
-            gap: 20px; max-width: 1200px; margin: auto; 
-        }
+        #filterBarrio, #filterComida { display: none; }
 
-        @media (min-width: 768px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
-        }
+        .grid { padding: 20px 15px; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: auto; }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); } }
 
-        /* Tarjeta Premium */
         .card { 
-            background: var(--card-bg); border-radius: 20px; overflow: hidden; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #edf2f7;
+            background: var(--card-bg); 
+            border-radius: 24px; 
+            overflow: hidden; 
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s ease, opacity 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         
-        .card-image-wrap { position: relative; height: 180px; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        .card.closed { opacity: 0.75; }
+        
+        .card-image-wrap { position: relative; height: 160px; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
+        .card.closed .card-img { filter: grayscale(0.8); }
         
         .category-tag { 
-            position: absolute; top: 12px; right: 12px; background: var(--accent); 
-            padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; 
-            color: #fff; text-transform: uppercase;
+            position: absolute; top: 12px; left: 12px; 
+            background: rgba(255,255,255,0.9); 
+            backdrop-filter: blur(4px);
+            padding: 4px 12px; border-radius: 20px; 
+            font-size: 11px; color: var(--primary); font-weight: 700; 
         }
 
-        .card-content { padding: 18px; }
-        .card-title { margin: 0 0 5px 0; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+        .card-content { padding: 20px; }
+        .title-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .card-title { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--primary); }
         
-        .description { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
-        
-        .stars { color: #f1c40f; font-size: 0.85rem; margin-bottom: 10px; }
+        .logo-square { 
+            width: 45px; height: 45px; border-radius: 10px; 
+            object-fit: cover; 
+            background: #f1f5f9; 
+            flex-shrink: 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .description { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
+        .stars { color: #fbbf24; font-size: 0.8rem; margin-bottom: 12px; }
         
         .info-box { 
-            background: #f8f9fa; border-radius: 12px; padding: 12px; margin-bottom: 15px; 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px;
+            background: #f8fafc; border-radius: 16px; padding: 12px; 
+            margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; 
         }
         .info-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
-        .info-item i { color: var(--accent); width: 14px; }
+        .info-item i { color: var(--accent); }
+        .info-item.highlight-day { color: var(--text-main); font-weight: 700; }
+        .info-item.status-closed { color: var(--danger); font-weight: 800; }
 
-        .full-address { font-size: 12px; margin-bottom: 10px; display: flex; gap: 6px; color: var(--text-main); font-weight: 500; }
-
-        .badges-container { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-        .badge { 
-            background: #e1f5fe; color: #0288d1; padding: 4px 10px; border-radius: 6px; 
-            font-size: 10px; font-weight: 700; border: 1px solid #b3e5fc;
+        .services-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 5px 0;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 10px;
         }
+        .service-badge {
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+        }
+        .service-badge.active { color: var(--success); }
+        .service-badge.inactive { color: #cbd5e1; text-decoration: line-through; }
 
-        /* Acciones en Mobile */
-        .card-actions { display: flex; gap: 10px; }
+        .full-address { font-size: 12px; margin-bottom: 15px; display: flex; gap: 6px; color: var(--text-main); font-weight: 500; }
+
+        .card-actions { display: flex; gap: 8px; }
         .btn { 
-            flex: 1; padding: 14px; border-radius: 12px; text-align: center; 
-            text-decoration: none; font-size: 13px; font-weight: 700; 
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
+            flex: 1; padding: 12px; border-radius: 14px; text-align: center; 
+            text-decoration: none; font-size: 13px; font-weight: 600; 
+            display: flex; align-items: center; justify-content: center; gap: 6px; 
+            transition: 0.2s;
         }
-        .btn-maps { background: #fff; color: var(--success); border: 2px solid var(--success); }
+        .btn-maps { background: #f1f5f9; color: var(--text-main); }
         .btn-order { background: var(--action); color: #fff; }
 
-        #status { text-align: center; padding: 40px; color: var(--text-muted); }
+        #status { text-align: center; padding: 50px; color: var(--text-muted); font-weight: 500; }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <h1>Guía de Locales</h1>
+        <h1>Explorar Locales</h1>
     </header>
 
     <div class="filter-container">
-        <select id="filterProvincia" onchange="aplicarFiltros()"><option value="">Provincia</option></select>
+        <select id="filterProvincia" onchange="actualizarDependientes()"><option value="">Provincia</option></select>
         <select id="filterBarrio" onchange="aplicarFiltros()"><option value="">Barrio</option></select>
-        <select id="filterComida" onchange="aplicarFiltros()"><option value="">Comida</option></select>
+        <select id="filterComida" onchange="aplicarFiltros()"><option value="">Tipo de Comida</option></select>
     </div>
 
-    <div id="status">Buscando locales cercanos...</div>
+    <div id="status">Cargando catálogo...</div>
     <div id="listaLocales" class="grid"></div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3Tj9Pnrsn3StL0Wk33lqTqgcaAiwzA-Svn5ZLtjsIY4mTddqBZONLV-aXzIFHNk_N/exec"; 
         let DATA_LOCALES = [];
 
+        // Lógica para obtener el día actual en Buenos Aires (-3)
+        function obtenerDiaHoyBA() {
+            const opciones = { timeZone: 'America/Argentina/Buenos_Aires', weekday: 'long' };
+            const nombreDia = new Intl.DateTimeFormat('es-AR', opciones).format(new Date());
+            // Limpiar acentos y pasar a minúsculas para coincidir con las llaves del objeto
+            return nombreDia.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
         async function cargarDatos() {
             try {
                 const response = await fetch(SCRIPT_URL);
                 DATA_LOCALES = await response.json();
-                llenarSelects();
+                llenarProvincia();
                 renderizar(DATA_LOCALES);
                 document.getElementById('status').style.display = 'none';
             } catch (e) {
-                document.getElementById('status').innerText = "Error de conexión.";
+                document.getElementById('status').innerText = "Hubo un problema al cargar los datos.";
             }
         }
 
-        function llenarSelects() {
-            const getUnicos = (campo) => [...new Set(DATA_LOCALES.map(l => l[campo]).filter(Boolean))].sort();
-            const filling = (id, lista) => {
-                const el = document.getElementById(id);
-                lista.forEach(item => el.innerHTML += `<option value="${item}">${item}</option>`);
-            };
-            filling('filterProvincia', getUnicos('provincia'));
-            filling('filterBarrio', getUnicos('barrio'));
-            filling('filterComida', getUnicos('categoria'));
+        function llenarProvincia() {
+            const pros = [...new Set(DATA_LOCALES.map(l => l.provincia).filter(Boolean))].sort();
+            const el = document.getElementById('filterProvincia');
+            el.innerHTML = '<option value="">Provincia</option>';
+            pros.forEach(p => el.innerHTML += `<option value="${p}">${p}</option>`);
+        }
+
+        function actualizarDependientes() {
+            const p = document.getElementById('filterProvincia').value;
+            const filterBarrio = document.getElementById('filterBarrio');
+            const filterComida = document.getElementById('filterComida');
+
+            if (!p) {
+                filterBarrio.style.display = "none";
+                filterComida.style.display = "none";
+                filterBarrio.value = "";
+                filterComida.value = "";
+                renderizar(DATA_LOCALES);
+                return;
+            }
+
+            const localesEnProvincia = DATA_LOCALES.filter(l => l.provincia === p);
+            const barrios = [...new Set(localesEnProvincia.map(l => l.barrio).filter(Boolean))].sort();
+            const comidas = [...new Set(localesEnProvincia.map(l => l.categoria).filter(Boolean))].sort();
+
+            filterBarrio.innerHTML = '<option value="">Barrio</option>';
+            barrios.forEach(b => filterBarrio.innerHTML += `<option value="${b}">${b}</option>`);
+            
+            filterComida.innerHTML = '<option value="">Tipo de Comida</option>';
+            comidas.forEach(c => filterComida.innerHTML += `<option value="${c}">${c}</option>`);
+
+            filterBarrio.style.display = "block";
+            filterComida.style.display = "block";
+            
+            aplicarFiltros();
         }
 
         function aplicarFiltros() {
             const p = document.getElementById('filterProvincia').value;
             const b = document.getElementById('filterBarrio').value;
             const c = document.getElementById('filterComida').value;
-            renderizar(DATA_LOCALES.filter(l => (!p || l.provincia === p) && (!b || l.barrio === b) && (!c || l.categoria === c)));
+
+            const filtrados = DATA_LOCALES.filter(l => 
+                (!p || l.provincia === p) && 
+                (!b || l.barrio === b) && 
+                (!c || l.categoria === c)
+            );
+
+            renderizar(filtrados);
         }
 
         function renderizar(lista) {
             const contenedor = document.getElementById('listaLocales');
+            const diaHoy = obtenerDiaHoyBA();
+            
+            const labelDias = {
+                lunes: "Lunes", martes: "Martes", miercoles: "Miércoles",
+                jueves: "Jueves", viernes: "Viernes", sabado: "Sábado", domingo: "Domingo"
+            };
+
             if (lista.length === 0) {
-                contenedor.innerHTML = '<p style="text-align:center; padding:20px;">No hay resultados.</p>';
+                contenedor.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#94a3b8;">No encontramos locales con esos filtros.</div>';
                 return;
             }
 
-            contenedor.innerHTML = lista.map(l => `
-                <div class="card">
+            contenedor.innerHTML = lista.map(l => {
+                const checkService = (val) => String(val).toLowerCase().includes('si') || val === true || val === "SI";
+                
+                // Obtener horario del día actual desde el objeto horariosSemana enviado por Apps Script
+                const horarioHoy = l.horariosSemana ? l.horariosSemana[diaHoy] : null;
+                const estaCerrado = !horarioHoy || horarioHoy.toString().trim() === "";
+                
+                return `
+                <div class="card ${estaCerrado ? 'closed' : ''}">
                     <div class="card-image-wrap">
                         <span class="category-tag">${l.categoria}</span>
-                        <img class="card-img" src="${l.foto || 'https://via.placeholder.com/400x200?text=Premium+Local'}">
+                        <img class="card-img" src="${l.foto || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400'}" loading="lazy">
                     </div>
                     <div class="card-content">
-                        <div class="stars">${'★'.repeat(l.puntaje)}${'☆'.repeat(5 - l.puntaje)}</div>
-                        <h3 class="card-title">${l.nombre}</h3>
-                        <p class="description">${l.descripcion}</p>
+                        <div class="title-wrapper">
+                            <h3 class="card-title">${l.nombre}</h3>
+                            ${l.logo ? `<img class="logo-square" src="${l.logo}" alt="logo">` : ''}
+                        </div>
+                        
+                        <div class="stars">${'★'.repeat(l.puntaje || 0)}${'☆'.repeat(5 - (l.puntaje || 0))}</div>
+                        <p class="description">${l.description || l.descripcion}</p>
+
+                        <div class="services-row">
+                            <span class="service-badge ${checkService(l.salon) ? 'active' : 'inactive'}">
+                                <i class="fa-solid fa-utensils"></i> Salón
+                            </span>
+                            <span class="service-badge ${checkService(l.takeAway) ? 'active' : 'inactive'}">
+                                <i class="fa-solid fa-bag-shopping"></i> Take Away
+                            </span>
+                            <span class="service-badge ${checkService(l.delivery) ? 'active' : 'inactive'}">
+                                <i class="fa-solid fa-motorcycle"></i> Delivery
+                            </span>
+                        </div>
                         
                         <div class="full-address">
                             <i class="fa-solid fa-location-dot" style="color:var(--accent)"></i>
@@ -181,25 +287,21 @@
                         </div>
 
                         <div class="info-box">
-                            <div class="info-item"><i class="fa-regular fa-calendar"></i> ${l.dias}</div>
-                            <div class="info-item"><i class="fa-regular fa-clock"></i> ${l.horarios}</div>
+                            <div class="info-item highlight-day"><i class="fa-regular fa-calendar"></i> Hoy ${labelDias[diaHoy]}</div>
+                            <div class="info-item ${estaCerrado ? 'status-closed' : ''}">
+                                <i class="fa-regular fa-clock"></i> ${estaCerrado ? 'CERRADO' : horarioHoy}
+                            </div>
                             <div class="info-item"><i class="fa-solid fa-city"></i> ${l.barrio}</div>
-                            <div class="info-item"><i class="fa-solid fa-map"></i> ${l.provincia}</div>
-                        </div>
-
-                        <div class="badges-container">
-                            ${l.salon.toLowerCase() === 'si' ? '<span class="badge">Salón</span>' : ''}
-                            ${l.takeAway.toLowerCase() === 'si' ? '<span class="badge">Take Away</span>' : ''}
-                            ${l.delivery.toLowerCase() === 'si' ? '<span class="badge">Delivery</span>' : ''}
+                            <div class="info-item"><i class="fa-solid fa-map-location-dot"></i> ${l.provincia}</div>
                         </div>
 
                         <div class="card-actions">
-                            <a href="${l.mapa}" target="_blank" class="btn btn-maps"><i class="fa-solid fa-route"></i> Mapa</a>
-                            ${l.linkPedido ? `<a href="${l.linkPedido}" target="_blank" class="btn btn-order"><i class="fa-solid fa-cart-shopping"></i> Pedir</a>` : ''}
+                            <a href="${l.mapa}" target="_blank" class="btn btn-maps">Mapa</a>
+                            ${l.linkPedido ? `<a href="${l.linkPedido}" target="_blank" class="btn btn-order">Hacer Pedido</a>` : ''}
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         window.onload = cargarDatos;
