@@ -182,11 +182,10 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbzvmltxhZHxroVcHBvWrJgS3BOT9R28x2uve8UnCg1uRGvieuqBEQLNz5xt8LorABX62w/exec"; 
         let datosFull = {};
         
-        // SECCIÓN DE BRANDING ACTUALIZADA CON TU LOGO
         const htmlBranding = `
         <div class="branding-aideas">
-            <img src="https://lh3.googleusercontent.com/d/1SGywAsWA8FAiwUhOd03aEhsBzGrXgotX" style="max-height: 50px; alt="Logo Aideas" style="max-height: 40px; margin-bottom: 0px; display: block; margin-left: auto; margin-right: auto;">
-            <p style="font-size:13px; color:#64748b; margin-top:5px;">Sitio creado por pido.club</p>
+            <img src="https://lh3.googleusercontent.com/d/1SGywAsWA8FAiwUhOd03aEhsBzGrXgotX" alt="Logo Aideas" style="max-height: 50px; margin-bottom: 0px; display: block; margin-left: auto; margin-right: auto;">
+            <p style="font-size:13px; color:#64748b; margin-top:0px;">Sitio creado por pido.club</p>
             <a href="https://wa.me/5491157667903" target="_blank" style="color:var(--primary); font-weight:800; text-decoration:none; font-size:11px; border:1px solid; padding:6px 12px; border-radius:8px; display:inline-block; margin-top:5px;">QUIERO MI CATÁLOGO</a>
         </div>`;
 
@@ -228,13 +227,18 @@
         }
 
         function renderizarProductos(items) {
-            const contenedor = document.getElementById('contenedor-productos'), contenedorSug = document.getElementById('seccion-sugerencias');
+            const contenedor = document.getElementById('contenedor-productos'), 
+                  contenedorSug = document.getElementById('seccion-sugerencias'),
+                  seccionOpciones = document.getElementById('seccion-opciones');
             const navSup = document.getElementById('nav-categorias'), navAnclas = document.getElementById('anclas-flotantes'), footer = document.getElementById('footer-pedido');
 
             if (!datosFull.estaAbierto || !items || items.length === 0) {
                 footer.style.display = 'none';
+                seccionOpciones.style.display = 'none'; // CORRECCIÓN: Oculta formulario si cerrado
                 let horariosHtml = (datosFull.config && datosFull.config.horarios) ? `<div class="horarios-box"><b>Nuestros Horarios</b>${datosFull.config.horarios.replace(/\n/g, '<br>')}</div>` : "";
                 contenedor.innerHTML = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:20px; margin-top:20px;"><div style="font-size:50px;">😴</div><h2 style="color:var(--primary);">¡Nos vemos pronto!</h2><p>Estamos cerrados por el momento.</p>${horariosHtml}</div>` + htmlBranding;
+                contenedorSug.innerHTML = "";
+                navSup.innerHTML = "";
                 return;
             }
 
@@ -284,16 +288,23 @@
 
         function actualizarTotal() {
             let total = 0, htmlRes = `<div class="resumen-header"><strong>Mi Pedido</strong><i class="fas fa-times" onclick="toggleResumen()" style="cursor:pointer"></i></div>`, hayItems = false;
+            
             datosFull.items.forEach((p, i) => {
-                const q = parseInt(document.getElementById(`qty-${i}`)?.value || 0);
+                const inputLista = document.getElementById(`qty-${i}`);
+                const inputSug = document.getElementById(`qty-sug-${i}`);
+                const q = parseInt(inputLista?.value || inputSug?.value || 0);
+
                 if(q > 0) {
                     total += q * p.precio; hayItems = true;
                     htmlRes += `<div class="resumen-item"><div style="flex:1"><strong>${p.nombre}</strong><br><small>$${fmt(p.precio)}</small></div><div class="resumen-controles"><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},-1)">-</button><span style="font-weight:bold; width:25px; text-align:center">${q}</span><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},1)">+</button><button style="color:#ef4444; border:none; background:#fee2e2; width:28px; height:28px; border-radius:8px; margin-left:10px;" onclick="eliminarProducto(${i})"><i class="fas fa-trash"></i></button></div></div>`;
                 }
             });
+
             document.getElementById('total-general').innerText = fmt(total);
             const panel = document.getElementById('resumen-pedido');
-            panel.innerHTML = htmlRes;
+            
+            // CORRECCIÓN: Solo actualizar HTML del resumen si está visible para permitir que los botones funcionen
+            if (panel.style.display === 'block') { panel.innerHTML = htmlRes; }
             if(!hayItems && panel.style.display === 'block') panel.style.display = 'none';
         }
 
@@ -334,7 +345,11 @@
         function verificarEnvio() { document.getElementById('cont-direccion-extra').style.display = /envio|delivery/i.test(document.getElementById('select-envio').value) ? 'block' : 'none'; }
         function setupFocusEvents() { const f = document.getElementById('footer-pedido'); document.querySelectorAll('.focus-input').forEach(i => { i.addEventListener('focus', () => f.classList.add('footer-hidden')); i.addEventListener('blur', () => f.classList.remove('footer-hidden')); }); }
         function mostrarAlerta() { const al = document.getElementById('custom-alert'); al.classList.add('show'); setTimeout(() => al.classList.remove('show'), 3000); }
-        function toggleResumen() { const r = document.getElementById('resumen-pedido'); r.style.display = r.style.display === 'block' ? 'none' : 'block'; actualizarTotal(); }
+        function toggleResumen() { 
+            const r = document.getElementById('resumen-pedido'); 
+            r.style.display = r.style.display === 'block' ? 'none' : 'block'; 
+            actualizarTotal(); 
+        }
         function irAlBotonPedir() { document.activeElement.blur(); }
 
         cargarDatos();
