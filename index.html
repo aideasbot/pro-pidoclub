@@ -13,34 +13,11 @@
         .header { background: white; margin: 0 -15px 10px -15px; padding: 20px; display: flex; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 70px; align-items: center; }
         .header img { max-height: 170px; max-width: 220px; object-fit: contain; }
         
-        /* --- ESTILOS BUSCADOR --- */
-        .search-container {
-            position: sticky;
-            top: 10px;
-            z-index: 1100;
-            margin: 0 -5px 15px -5px;
-            transition: all 0.3s ease;
-        }
-        .search-wrapper {
-            background: white;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            padding: 8px 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-        }
+        .search-container { position: sticky; top: 10px; z-index: 1100; margin: 0 -5px 15px -5px; transition: all 0.3s ease; }
+        .search-wrapper { background: white; border-radius: 15px; display: flex; align-items: center; padding: 8px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
         .search-wrapper i { color: var(--text-light); font-size: 16px; margin-right: 10px; }
-        .search-wrapper input {
-            border: none;
-            width: 100%;
-            outline: none;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text-main);
-            background: transparent;
-        }
-        /* Ocultar secciones cuando se busca */
+        .search-wrapper input { border: none; width: 100%; outline: none; font-size: 15px; font-weight: 500; color: var(--text-main); background: transparent; }
+
         .searching .cat-title, .searching #seccion-sugerencias, .searching #nav-categorias { display: none !important; }
         .no-results { text-align: center; padding: 40px; color: var(--text-light); font-weight: 600; }
 
@@ -53,7 +30,6 @@
         
         #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; color: var(--text-light); }
         .spinner { font-size: 60px; color: var(--primary); margin-bottom: 20px; display: inline-block; animation: swing 2s ease-in-out infinite; }
-        
         @keyframes swing { 0% { transform: rotate(0deg); } 25% { transform: rotate(-45deg); } 75% { transform: rotate(45deg); } 100% { transform: rotate(0deg); } }
         .loader-text { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--text-light); margin: 0; text-transform: uppercase; }
 
@@ -93,7 +69,6 @@
         .input-id { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #64748b !important; }
         
         .footer-container { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
-        
         .nav-anclas { display: flex; overflow-x: auto; padding: 5px 0; align-items: center; position: relative; width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .nav-anclas::-webkit-scrollbar { display: none; }
         .track-anclas { display: flex; gap: 8px; width: max-content; padding-right: 20px; }
@@ -113,7 +88,6 @@
         .resumen-desplegable { background: white; border-radius: 20px 20px 0 0; padding: 20px; max-height: 350px; overflow-y: auto; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; border: 1px solid #e2e8f0; margin-bottom: -10px; }
         .resumen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
         .resumen-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .resumen-controles { display: flex; align-items: center; gap: 5px; }
 
         .horarios-box { margin-top: 20px; padding: 20px; background: #f1f5f9; border-radius: 16px; text-align: left; display: inline-block; font-size: 14px; color: var(--text-main); border: 1px dashed #cbd5e1; }
         .horarios-box b { color: var(--primary); display: block; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
@@ -284,7 +258,6 @@
             initInteractiveAutoScroll();
         }
 
-        /* FILTRO DE BÚSQUEDA */
         function filtrarProductos() {
             const query = document.getElementById('input-busqueda').value.toLowerCase().trim();
             const cards = document.querySelectorAll('#contenedor-productos .card');
@@ -322,7 +295,6 @@
             }
         }
 
-        /* LÓGICA DE AUTO-SCROLL ANCLAS */
         let intervalAnclas, timeoutInactividad, isUserInteracting = false;
         const containerAnclas = document.getElementById('anclas-flotantes-container');
 
@@ -368,7 +340,7 @@
                 const q = parseInt(document.getElementById(`qty-${i}`)?.value || document.getElementById(`qty-sug-${i}`)?.value || 0);
                 if(q > 0) {
                     total += q * p.precio; hayItems = true;
-                    htmlRes += `<div class="resumen-item"><div style="flex:1"><strong>${p.nombre}</strong><br><small>$${fmt(p.precio)}</small></div><div class="resumen-controles"><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},-1)">-</button><span style="font-weight:bold; width:25px; text-align:center">${q}</span><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},1)">+</button><button style="color:#ef4444; border:none; background:#fee2e2; width:28px; height:28px; border-radius:8px; margin-left:10px;" onclick="eliminarProducto(${i})"><i class="fas fa-trash"></i></button></div></div>`;
+                    htmlRes += `<div class="resumen-item"><div style="flex:1"><strong>${p.nombre}</strong><br><small>$${fmt(p.precio)}</small></div><div class="qty-wrapper"><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},-1)">-</button><span style="font-weight:bold; width:25px; text-align:center">${q}</span><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},1)">+</button><button style="color:#ef4444; border:none; background:#fee2e2; width:28px; height:28px; border-radius:8px; margin-left:10px;" onclick="eliminarProducto(${i})"><i class="fas fa-trash"></i></button></div></div>`;
                 }
             });
             document.getElementById('total-general').innerText = fmt(total);
@@ -381,25 +353,66 @@
             const idPed = document.getElementById('input-id-generado').value, mesa = document.getElementById('input-mesa').value;
             if(!mesa) { document.getElementById('cont-mesa').scrollIntoView(); document.getElementById('input-mesa').focus(); return mostrarAlerta(); }
             const payload = { codigo: idPed, nombre: document.getElementById('input-nombre').value || "Cliente", formaEntrega: "SOLICITUD CUENTA", datosAdicionales: mesa, pedido: "SOLICITA LA CUENTA", solicitaCuenta: true };
-            try { await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) }); } catch (e) {}
-            window.open(`https://wa.me/${datosFull.config.telefono}?text=${encodeURIComponent("¡Hola! Pido la cuenta del pedido ("+idPed+") mesa "+mesa)}`);
+            fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+            window.location.href = `https://wa.me/${datosFull.config.telefono}?text=${encodeURIComponent("¡Hola! Pido la cuenta del pedido ("+idPed+") mesa "+mesa)}`;
         }
 
         async function gestionarPedido() {
             const btn = document.querySelector('.btn-ws'), idPed = document.getElementById('input-id-generado').value;
-            const nombre = document.getElementById('input-nombre').value, pago = document.getElementById('select-pago').value, envio = document.getElementById('select-envio').value, notas = document.getElementById('input-notas').value, mesa = document.getElementById('input-mesa').value, calle = document.getElementById('input-calle').value, altura = document.getElementById('input-altura').value;
+            const nombre = document.getElementById('input-nombre').value, 
+                  pago = document.getElementById('select-pago').value, 
+                  envio = document.getElementById('select-envio').value, 
+                  notas = document.getElementById('input-notas').value, 
+                  mesa = document.getElementById('input-mesa').value, 
+                  calle = document.getElementById('input-calle').value, 
+                  altura = document.getElementById('input-altura').value;
+            
             const reqDir = /envio|delivery/i.test(envio);
-            if ((datosFull.config.pideNombre && !nombre) || !pago || (reqDir && (!calle || !altura))) { document.getElementById('seccion-opciones').scrollIntoView(); return mostrarAlerta(); }
+            
+            if ((datosFull.config.pideNombre && !nombre) || !pago || (reqDir && (!calle || !altura))) { 
+                document.getElementById('seccion-opciones').scrollIntoView(); 
+                return mostrarAlerta(); 
+            }
+
             let t = `Hola! Mi pedido (${idPed}):%0A`, total = 0, itemsExcel = "";
+            let hayProductos = false;
+
             datosFull.items.forEach((p, i) => {
-                const q = parseInt(document.getElementById(`qty-${i}`)?.value || 0);
-                if(q > 0) { t += `\u2022 ${q} x ${p.nombre}%0A`; itemsExcel += `${q}x ${p.nombre}, `; total += (q * p.precio); }
+                const q = parseInt(document.getElementById(`qty-${i}`)?.value || document.getElementById(`qty-sug-${i}`)?.value || 0);
+                if(q > 0) { 
+                    t += `\u2022 ${q} x ${p.nombre}%0A`; 
+                    itemsExcel += `${q}x ${p.nombre}, `; 
+                    total += (q * p.precio);
+                    hayProductos = true;
+                }
             });
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>...';
-            const payload = { codigo: idPed, nombre, formaEntrega: envio || "Local", datosAdicionales: reqDir ? `${calle} ${altura}` : (mesa || "-"), notas: notas || "-", pedido: itemsExcel.slice(0,-2), total, pago, solicitaCuenta: false };
-            try { await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) }); } catch (e) {}
-            window.open(`https://wa.me/${datosFull.config.telefono}?text=${t + `%0A*Cliente:* ${nombre}${mesa ? '%0A*Mesa:* '+mesa : ''}${envio ? '%0A*Entrega:* '+envio : ''}${reqDir ? '%0A*Dir:* '+calle+' '+altura : ''}%0A*Pago:* ${pago}%0A*Total: $${fmt(total)}*`}`);
-            btn.disabled = false; btn.innerHTML = '<i class="fab fa-whatsapp"></i> PEDIR';
+
+            if(!hayProductos) return alert("El carrito está vacío");
+
+            const textoFinal = t + `%0A*Cliente:* ${nombre}${mesa ? '%0A*Mesa:* '+mesa : ''}${envio ? '%0A*Entrega:* '+envio : ''}${reqDir ? '%0A*Dir:* '+calle+' '+altura : ''}%0A*Pago:* ${pago}%0A*Total: $${fmt(total)}*`;
+            const urlWhatsapp = `https://wa.me/${datosFull.config.telefono}?text=${textoFinal}`;
+
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>...';
+
+            const payload = { 
+                codigo: idPed, nombre, formaEntrega: envio || "Local", 
+                datosAdicionales: reqDir ? `${calle} ${altura}` : (mesa || "-"), 
+                notas: notas || "-", pedido: itemsExcel.slice(0,-2), 
+                total, pago, solicitaCuenta: false 
+            };
+
+            // Ejecución optimizada para Safari / iPhone
+            fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
+                .catch(e => console.log("Log error"));
+
+            setTimeout(() => {
+                window.location.href = urlWhatsapp;
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fab fa-whatsapp"></i> PEDIR';
+                }, 2000);
+            }, 100);
         }
 
         function verificarEnvio() { document.getElementById('cont-direccion-extra').style.display = /envio|delivery/i.test(document.getElementById('select-envio').value) ? 'block' : 'none'; }
